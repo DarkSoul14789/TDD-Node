@@ -11,7 +11,9 @@
   "author": "Shubh Shah",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "sequelize": "^6.25.5",
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "eslint": "^8.26.0",
@@ -48,13 +50,13 @@
       ],
       "eqeqeq": "warn",
       "prettier/prettier": [
-        "warn",
+        "off",
         {
           "singleQuote": true,
           "parser": "flow"
         }
       ],
-      "no-unused-vars":"warn"
+      "no-unused-vars": "warn"
     }
   },
   "prettier": {
