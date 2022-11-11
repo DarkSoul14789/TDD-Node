@@ -12,82 +12,44 @@ beforeEach(() => {
 });
 
 describe('User Registration', () => {
-  it('returns 200 Ok when signup request is valid', (done) => {
-    request(app)
-      .post('/api/1.0/users')
-      .send({
-        username: 'user1',
-        email: 'user1@gmail.com',
-        password: 'P@ssword',
-      })
-      .then((response) => {
-        expect(response.status).toBe(200);
-        done();
-      });
+  const postValid = () => {
+    return request(app).post('/api/1.0/users').send({
+      username: 'user1',
+      email: 'user1@gmail.com',
+      password: 'P@ssword',
+    });
+  };
+
+  it('returns 200 Ok when signup request is valid', async () => {
+    const response = await postValid();
+    expect(response.status).toBe(200);
   });
 
-  it('return success message when signup request is valid', (done) => {
-    request(app)
-      .post('/api/1.0/users')
-      .send({
-        username: 'user1',
-        email: 'user1@gmail.com',
-        password: 'P@ssword',
-      })
-      .then((response) => {
-        expect(response.body.message).toBe('User Registered Successfully');
-        done();
-      });
+  it('return success message when signup request is valid', async () => {
+    const response = await postValid();
+    expect(response.body.message).toBe('User Registered Successfully');
   });
 
-  it('saves the user to database', (done) => {
-    request(app)
-      .post('/api/1.0/users')
-      .send({
-        username: 'user1',
-        email: 'user1@gmail.com',
-        password: 'P@ssword',
-      })
-      .then(() => {
-        User.findAll().then((users) => {
-          expect(users.length).toBe(1);
-          done();
-        });
-      });
+  it('saves the user to database', async () => {
+    await postValid();
+    User.findAll().then((users) => {
+      expect(users.length).toBe(1);
+    });
+  });
+  it('saves the username and email to database', async () => {
+    await postValid();
+    User.findAll().then((users) => {
+      const savedUser = users[0];
+      expect(savedUser.username).toBe('user1');
+      expect(savedUser.email).toBe('user1@gmail.com');
+    });
   });
 
-  it('saves the username and email to database', (done) => {
-    request(app)
-      .post('/api/1.0/users')
-      .send({
-        username: 'user1',
-        email: 'user1@gmail.com',
-        password: 'P@ssword',
-      })
-      .then(() => {
-        User.findAll().then((users) => {
-          const savedUser = users[0];
-          expect(savedUser.username).toBe('user1');
-          expect(savedUser.email).toBe('user1@gmail.com')
-          done();
-        });
-      });
-  });
-
-  it('hashes the pasword in the database', (done) => {
-    request(app)
-      .post('/api/1.0/users')
-      .send({
-        username: 'user1',
-        email: 'user1@gmail.com',
-        password: 'P@ssword',
-      })
-      .then(() => {
-        User.findAll().then((users) => {
-          const savedUser = users[0];
-          expect(savedUser.password).not.toBe('P@ssword');
-          done();
-        });
-      });
+  it('hashes the pasword in the database', async () => {
+    await postValid();
+    User.findAll().then((users) => {
+      const savedUser = users[0];
+      expect(savedUser.password).not.toBe('P@ssword');
+    });
   });
 });
