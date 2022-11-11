@@ -32,24 +32,21 @@ describe('User Registration', () => {
 
   it('saves the user to database', async () => {
     await postValid();
-    User.findAll().then((users) => {
-      expect(users.length).toBe(1);
-    });
+    const users = await User.findAll();
+    expect(users.length).toBe(1);
   });
   it('saves the username and email to database', async () => {
     await postValid();
-    User.findAll().then((users) => {
-      const savedUser = users[0];
-      expect(savedUser.username).toBe('user1');
-      expect(savedUser.email).toBe('user1@gmail.com');
-    });
+    const users = await User.findAll();
+    const savedUser = users[0];
+    expect(savedUser.username).toBe('user1');
+    expect(savedUser.email).toBe('user1@gmail.com');
   });
 
   it('hashes the pasword in the database', async () => {
     await postValid();
-    User.findAll().then((users) => {
-      const savedUser = users[0];
-      expect(savedUser.password).not.toBe('P@ssword');
-    });
+    const users = await User.findAll();
+    const savedUser = users[0];
+    expect(savedUser.password).not.toBe('P@ssword');
   });
 });
